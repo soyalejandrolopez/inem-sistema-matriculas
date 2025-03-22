@@ -349,7 +349,7 @@
                     </li>
                     @endif
                     
-                    @if(Auth::user()->role === 'super_admin' || Auth::user()->hasPermission('manage_permissions'))
+                    @if(Auth::user()->role === 'super_admin' || Auth::user()->hasPermission('manage_enrollment'))
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.estudiantes.*') ? 'active' : '' }}" href="{{ route('admin.estudiantes.index') }}">
                             <i class="bi bi-people-fill"></i> Estudiantes
@@ -436,6 +436,8 @@
                         </a>
                     </li>
                     @endif
+
+ 
 
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}" href="#">
