@@ -24,10 +24,18 @@ class SuperAdminController extends Controller
         }
         
         // Get some statistics for the dashboard
-        $userCount = User::count();
+        // Filtrar para contar solo usuarios regulares (no admin, no super_admin)
+        $userCount = User::where('role', 'user')->count();
+        
+        // Obtener la lista de los últimos 5 usuarios regulares
+        $recentUsers = User::where('role', 'user')
+                           ->orderBy('created_at', 'desc')
+                           ->take(5)
+                           ->get();
         
         return view('admin.dashboard', [
-            'userCount' => $userCount
+            'userCount' => $userCount,
+            'recentUsers' => $recentUsers
         ]);
     }
 }

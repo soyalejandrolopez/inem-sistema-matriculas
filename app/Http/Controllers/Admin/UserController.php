@@ -26,7 +26,9 @@ class UserController extends Controller
             return redirect('/')->with('error', 'No tienes permiso para acceder a esta página.');
         }
         
+        // Obtener todos los usuarios
         $users = User::all();
+        
         return view('admin.users.index', compact('users'));
     }
 

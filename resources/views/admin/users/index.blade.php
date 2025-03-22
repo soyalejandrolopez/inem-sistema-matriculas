@@ -56,7 +56,7 @@
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    @if(Auth::id() != $user->id)
+                                    @if(Auth::user()->role === 'super_admin' && Auth::id() != $user->id && $user->role !== 'super_admin')
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')

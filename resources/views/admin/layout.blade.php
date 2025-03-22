@@ -65,7 +65,7 @@
                         </a>
                     </li>
                     
-                    @if(Auth::user()->role === 'super_admin' || Auth::user()->hasPermission('manage_users'))
+                    @if(Auth::user()->role === 'super_admin')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                             <i class="bi bi-people me-2"></i> Usuarios
