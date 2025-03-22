@@ -14,7 +14,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Verificar si el usuario está autenticado
         if (!Auth::check()) {
@@ -26,8 +26,52 @@ class UserController extends Controller
             return redirect('/')->with('error', 'No tienes permiso para acceder a esta página.');
         }
         
-        // Obtener todos los usuarios
-        $users = User::all();
+        // Iniciar una consulta para obtener usuarios
+        $query = User::query();
+        
+        // Buscar por nombre o email si se proporciona un término de búsqueda
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        // Filtrar por rol si se selecciona un rol
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+        
+        // Ordenar resultados
+        if ($request->filled('order')) {
+            switch ($request->order) {
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+        } else {
+            // Orden predeterminado: más recientes primero
+            $query->orderBy('created_at', 'desc');
+        }
+        
+        // Obtener usuarios paginados
+        $users = $query->paginate(10);
+        
+        // Mantener los parámetros de búsqueda en la paginación
+        $users->appends($request->query());
         
         return view('admin.users.index', compact('users'));
     }
